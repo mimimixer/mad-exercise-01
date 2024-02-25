@@ -10,6 +10,7 @@ class App {
     fun playNumberGame(digitsToGuess: Int = 4) {
         //TODO: build a menu which calls the functions and works with the return values
         val numberToGuess = generateRandomNonRepeatingNumber(digitsToGuess)
+        println(" we are guessing $numberToGuess")
         var notGuessed = true
         //println("we were tying to guess this number: $numberToGuess")
         while (notGuessed){
@@ -17,7 +18,7 @@ class App {
             try {
                 val input = readln().toInt()
                 val output = checkUserInputAgainstGeneratedNumber(input, numberToGuess).toString()
-                print(output)
+                println(output)
                 if (output.last().digitToInt() == digitsToGuess){
                     println(" Congratulations! You guessed the number $numberToGuess right! YAY!")
                     notGuessed = false
@@ -26,8 +27,6 @@ class App {
                 println("input must be a number with $digitsToGuess distinct digits. try again")
             }
         }
-
-        //println(checkUserInputAgainstGeneratedNumber(1234, numberToGuess))
     }
 
     /**
@@ -81,14 +80,22 @@ class App {
             throw IllegalArgumentException("size of input number does not match number to guess")
         }
 
-        if (inputNumberList.size != inputNumberList.distinct().size){
-            throw IllegalArgumentException("whoopsie, digits are not distinct")
-        }
+        /* mrmpf
+     *  The game generates number with non-repeating digits.
+     * Note: The input and the generated number must both be numbers.
+     * If the inputs do not meet these criteria, an IllegalArgumentException is thrown.
+     *
+     * would make sense if you specify - at least in the FAILED TEST - that we don't have to
+     * check for this
 
-        generatedNumberList.forEach{ digit ->
-            if (digit in inputNumberList) {
+        * if (inputNumberList.size != inputNumberList.distinct().size){
+            throw IllegalArgumentException("whoopsie, digits are not distinct")}
+      */
+
+        for ( i in 0 until generatedNumberList.size ){
+            if (generatedNumberList[i] in inputNumberList) {
                 m++
-                if (generatedNumberList.indexOf(digit) == inputNumberList.indexOf(digit)){
+                if (generatedNumberList[i] == inputNumberList[i]){
                     n++
                 }
             }
