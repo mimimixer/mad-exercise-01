@@ -4,10 +4,6 @@
 package at.ac.fhcampuswien
 
 import java.lang.NumberFormatException
-import kotlin.random.Random
-import kotlin.math.pow
-import kotlin.random.Random.Default.nextInt
-
 
 class App {
     // Game logic for a number guessing game
@@ -18,12 +14,16 @@ class App {
         //println("we were tying to guess this number: $numberToGuess")
         while (notGuessed){
             print(" please enter a number with $digitsToGuess distinct digits: ")
-            var input = readln().toInt()
-            var output = checkUserInputAgainstGeneratedNumber(input, numberToGuess).toString()
-            print(output)
-            if (output.last().digitToInt() == digitsToGuess){
-                println(" Congratulations! You guessed the number $numberToGuess right! YAY!")
-                notGuessed = false
+            try {
+                val input = readln().toInt()
+                val output = checkUserInputAgainstGeneratedNumber(input, numberToGuess).toString()
+                print(output)
+                if (output.last().digitToInt() == digitsToGuess){
+                    println(" Congratulations! You guessed the number $numberToGuess right! YAY!")
+                    notGuessed = false
+                }
+            }catch (iae: IllegalArgumentException) {
+                println("input must be a number with $digitsToGuess distinct digits. try again")
             }
         }
 
@@ -46,7 +46,12 @@ class App {
      */
     val generateRandomNonRepeatingNumber: (Int) -> Int = { length ->
         //TODO implement the function
-        (1..9).shuffled().take(length).joinToString("").toInt()
+        if (length in 1..9) {
+            (1..9).shuffled().take(length).joinToString("").toInt()
+        }else {
+            println("be reasonable! your number must have min 1 and max 9 digits")
+            throw IllegalArgumentException("not creating numbers with less than 1 or more than 9 digits")
+        }
     }
 
     /**
@@ -70,19 +75,23 @@ class App {
         //TODO implement the function
         var m = 0
         var n = 0
-        try {
-            for(digit in generatedNumber.toString().map { it.toString().toInt() }){
-                if (digit in input.toString().map { it.toString().toInt() }) {
-                    m++
-                    if (generatedNumber.toString().map { it.toString().toInt() }.indexOf(digit)
-                        == input.toString().map { it.toString().toInt() }.indexOf(digit)
-                    ) {
-                        n++
-                    }
+        val generatedNumberList = generatedNumber.toString().map { it.toString().toInt() }
+        val inputNumberList = input.toString().map { it.toString().toInt() }
+        if (generatedNumberList.size !=inputNumberList.size) {
+            throw IllegalArgumentException("size of input number does not match number to guess")
+        }
+
+        if (inputNumberList.size != inputNumberList.distinct().size){
+            throw IllegalArgumentException("whoopsie, digits are not distinct")
+        }
+
+        generatedNumberList.forEach{ digit ->
+            if (digit in inputNumberList) {
+                m++
+                if (generatedNumberList.indexOf(digit) == inputNumberList.indexOf(digit)){
+                    n++
                 }
             }
-        }catch (iae: IllegalArgumentException){
-            println("input must be a number, try again")
         }
         CompareResult(m, n)   // return value is a placeholder
     }
@@ -94,14 +103,14 @@ fun main() {
     var wannaPlay = true
     while(wannaPlay) {
         print("how long will be the number you want to guess? ")
-        var digitsToGuess = readln().toInt()
+        val digitsToGuess = readln().toInt()
         play.playNumberGame(digitsToGuess)
         print("do you want to play again? for yes type 1 ")
         try {
-            var playAgain = readln().toInt()
+            readln().toInt()
         } catch (e: NumberFormatException) {
             wannaPlay = false
-            println("we had a lot of fun! good bye!")
+            println("\n\nwe had a lot of fun! good bye!")
         }
     }
 

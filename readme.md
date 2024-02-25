@@ -4,8 +4,7 @@
 * **[Introduction to programming in Kotlin]
 * (https://developer.android.com/courses/pathways/android-basics-compose-unit-1-pathway-1)
 * ** and **[Kotlin fundamentals]
-* (https://developer.android.com/courses/pathways/android-basics-compose-unit-2-pathway-1
-)**.
+* (https://developer.android.com/courses/pathways/android-basics-compose-unit-2-pathway-1)**.
 * Answer the questions inside this Readme.md file and push it to your repository.
 * Submit your coding solution of the Number Guessing Game inside the repository.
 * Submit the link to your repository in Moodle.
