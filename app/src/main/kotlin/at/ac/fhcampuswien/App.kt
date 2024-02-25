@@ -3,6 +3,7 @@
  */
 package at.ac.fhcampuswien
 
+import java.lang.NumberFormatException
 import kotlin.random.Random
 import kotlin.math.pow
 import kotlin.random.Random.Default.nextInt
@@ -12,7 +13,21 @@ class App {
     // Game logic for a number guessing game
     fun playNumberGame(digitsToGuess: Int = 4) {
         //TODO: build a menu which calls the functions and works with the return values
-        println(generateRandomNonRepeatingNumber(4))
+        val numberToGuess = generateRandomNonRepeatingNumber(digitsToGuess)
+        var notGuessed = true
+        //println("we were tying to guess this number: $numberToGuess")
+        while (notGuessed){
+            print(" please enter a number with $digitsToGuess distinct digits: ")
+            var input = readln().toInt()
+            var output = checkUserInputAgainstGeneratedNumber(input, numberToGuess).toString()
+            print(output)
+            if (output.last().digitToInt() == digitsToGuess){
+                println(" Congratulations! You guessed the number $numberToGuess right! YAY!")
+                notGuessed = false
+            }
+        }
+
+        //println(checkUserInputAgainstGeneratedNumber(1234, numberToGuess))
     }
 
     /**
@@ -53,13 +68,42 @@ class App {
      */
     val checkUserInputAgainstGeneratedNumber: (Int, Int) -> CompareResult = { input, generatedNumber ->
         //TODO implement the function
-
-        CompareResult(0, 0)   // return value is a placeholder
+        var m = 0
+        var n = 0
+        try {
+            for(digit in generatedNumber.toString().map { it.toString().toInt() }){
+                if (digit in input.toString().map { it.toString().toInt() }) {
+                    m++
+                    if (generatedNumber.toString().map { it.toString().toInt() }.indexOf(digit)
+                        == input.toString().map { it.toString().toInt() }.indexOf(digit)
+                    ) {
+                        n++
+                    }
+                }
+            }
+        }catch (iae: IllegalArgumentException){
+            println("input must be a number, try again")
+        }
+        CompareResult(m, n)   // return value is a placeholder
     }
 }
 
 fun main() {
-    println("Hello World!")
+    println("Hello Player, we are paying a number guessing game!")
     val play = App()
-    println(play.playNumberGame(4))
+    var wannaPlay = true
+    while(wannaPlay) {
+        print("how long will be the number you want to guess? ")
+        var digitsToGuess = readln().toInt()
+        play.playNumberGame(digitsToGuess)
+        print("do you want to play again? for yes type 1 ")
+        try {
+            var playAgain = readln().toInt()
+        } catch (e: NumberFormatException) {
+            wannaPlay = false
+            println("we had a lot of fun! good bye!")
+        }
+    }
+
+    println()
 }
